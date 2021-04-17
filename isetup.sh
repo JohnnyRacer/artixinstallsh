@@ -48,16 +48,22 @@ do
 
     
 done
+mkdir /mnt/home
+mkdir /mnt/boot 
+mount /dev/"$bootdi" /mnt/boot
+mkfs.vfat /dev/"$bootdi"
+&& echo "Mounted /boot Sucessfully";
 
 
-mkdir /mnt/boot && mkfs.vfat /dev/"$bootdi" && mount /dev/"$bootdi" /mnt/boot && echo "Mounted /boot Sucessfully";
-mkfs.ext4 /dev/"$rootdi" && mount /dev/"$rootdi" /mnt && echo "Listing /mnt & /mnt/boot rn"; ls /mnt && ls /mnt/boot && echo "Seems Good, Can you see the ls?";
+mkfs.ext4 /dev/"$rootdi" 
+mount /dev/"$rootdi" /mnt 
+echo "Listing /mnt & /mnt/boot rn"
+ls /mnt && ls /mnt/boot && echo "Seems Good, Can you see the ls?";
 
 
 
 qsize=${#$(eval df /dev/"$swapdi"&& echo "okay")}
 psize=${#$(eval df /dev/"$swapdi"&& echo "okay")}
-
 
 
 if (($psize != 0 )); then
@@ -77,7 +83,7 @@ if (($qsize != 0 )); then
 
 eval fdisk /dev/"$homedi" -l
 echo "Home works okay!"
-mkdir /mnt/home && mkfs.ext4 /dev/"$homedi" && mount /dev/"$homedi" && echo "Mounted /home Sucessfully";
+mkfs.ext4 /dev/"$homedi" && mount /dev/"$homedi" /mnt/home && echo "Mounted /home Sucessfully";
 
 else 
 
@@ -86,17 +92,17 @@ return
 fi
 
 
-basestrap /mnt base base-devel openrc elogind-openrc &&
+basestrap /mnt base base-devel openrc elogind-openrc &
 
-basestrap /mnt linux-zen linux-firmware &&
+basestrap /mnt linux linux-firmware &
 
-pacman -S nano glibc links git &&
+pacman -S nano glibc links git &
 
-fstabgen -U /mnt >> /mnt/etc/fstab &&
+fstabgen -U /mnt >> /mnt/etc/fstab &
 
-mkdir artix_pchroot &&
+cp pchroot.sh /mnt ;
 
-cp pchroot.sh /mnt/artix_pchroot ;
+mount /dev/"$bootdi" /mnt/boot &&
 
 echo "Base system setup looks okay....Ready to chroot to /mnt (Any key to continue)";
 read chstr

@@ -11,7 +11,7 @@ echo "Enter the City"
 read -r citya
 
 ln -sf /usr/share/zoneinfo/"$regiona"/"$citya" /etc/localtime && echo "Region Set OK";
-hwclock --systohc && pacman -Sy linux-zen linux-firmware nano glibc make git wpa_supplicant dhcpcd grub efibootmgr os-prober connman-openrc connman-gtk && rc-update add connmand && echo "Time set, preliminary utils installed";
+hwclock --systohc && pacman -Sy linux linux-firmware nano glibc make git wpa_supplicant dhcpcd grub efibootmgr os-prober connman-openrc connman-gtk xorg xorg-xinit && rc-update add connmand && echo "Time set, preliminary utils installed";
 nano /etc/locale.gen; locale-gen && export LANG="en_US.UTF-8" ; export LC_COLLATE="C";
 mkinitcpio -P && grub-mkconfig -o /boot/grub/grub.cfg &&
 echo "Type Your Password (Root Acc)";
